@@ -46,6 +46,19 @@ sftp my-server
 
 Access opens a browser for authentication when needed, followed by normal SSH-key authentication. Verify the host-key fingerprint through a trusted connection.
 
+## Security test
+
+This script prints PASS/FAIL and stops at the first failure:
+
+```sh
+# On the server (requires Docker Compose and jq):
+./scripts/basic_security_scan.sh local
+# On a laptop on another network (requires curl):
+./scripts/basic_security_scan.sh remote ssh.example.com
+```
+
+Checks running-container hardening and an unauthenticated SSH WebSocket request redirecting to Access login over verified HTTPS. It does not prove the identity policy, optional MFA, origin connectivity, or blocked public TCP/22; complete the external SSH login and cutover checks below.
+
 ## Safe cutover
 
 Complete an SSH login from **another network** before removing the router's TCP/22 forward. Keep LAN or console recovery available. Then check public IPv6 ingress, UPnP, DMZ, and other forwarding rules; verify direct public-IP SSH is blocked while tunnel SSH still works. Keep host OpenSSH and LAN access running, and continue OS security updates: tunneling does not fix kernel CVEs.
